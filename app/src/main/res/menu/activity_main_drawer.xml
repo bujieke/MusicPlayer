@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_randomplay"
+            android:icon="@drawable/random"
+            android:title="随机播放" />
+        <item
+            android:id="@+id/nav_listplay"
+            android:icon="@drawable/list"
+            android:title="列表播放" />
+        <item
+            android:id="@+id/nav_singleplay"
+            android:icon="@drawable/single"
+            android:title="单曲循环" />
+        <item
+            android:id="@+id/nav_querymusic"
+            android:icon="@drawable/query"
+            android:title="本地音乐" />
+    </group>
+
+    <item android:title="其他">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/share"
+                android:title="分享" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/send"
+                android:title="发送" />
+        </menu>
+    </item>
+
+</menu>
