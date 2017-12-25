@@ -24,6 +24,7 @@ public class PreparedListener implements MediaPlayer.OnPreparedListener {
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();    //开始播放
+
         if (positon > 0) {    //如果音乐不是从头播放
             mp.seekTo(positon);
         }

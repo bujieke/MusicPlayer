@@ -1,9 +1,19 @@
-package com.zy.musicplayer.eventmsg;
+package com.zy.musicplayer.application;
 
+import android.app.Application;
+import android.content.Intent;
+
+import com.zy.musicplayer.db.DbManager;
 import com.zy.musicplayer.entity.MediaEntity;
+import com.zy.musicplayer.eventmsg.BindDataMsg;
+import com.zy.musicplayer.service.MusicPlayService;
+
+import org.simple.eventbus.EventBus;
+
+import java.util.List;
 
 /**
- * Created by  zy on 2017/12/15.
+ * Created by  zy on 2017/12/25.
  * //          佛曰:
  * //                  写字楼里写字间，写字间里程序员；
  * //                  程序人员写程序，又拿程序换酒钱。
@@ -14,26 +24,13 @@ import com.zy.musicplayer.entity.MediaEntity;
  * //                  别人笑我忒疯癫，我笑自己命太贱；
  * //                  不见满街漂亮妹，哪个归得程序员？
  */
-public class MusicControllerMsg {
-    public MediaEntity getEntity() {
-        return entity;
-    }
+public class MyApplication extends Application {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //开启服务
+        Intent intent = new Intent(this, MusicPlayService.class);
+        startService(intent);
 
-    public int getActicon() {
-        return acticon;
-    }
-
-    public int getPostion() {
-        return postion;
-    }
-
-    private MediaEntity entity; //歌曲信息
-    private int acticon; //动作
-    private int postion;  //跳转位置
-
-    public MusicControllerMsg(MediaEntity entity, int acticon, int postion) {
-        this.entity = entity;
-        this.acticon = acticon;
-        this.postion = postion;
     }
 }

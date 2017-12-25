@@ -1,4 +1,8 @@
-package com.zy.musicplayer.listener;
+package com.zy.musicplayer.eventmsg;
+
+import com.zy.musicplayer.entity.MediaEntity;
+
+import java.util.List;
 
 /**
  * Created by  zy on 2017/12/15.
@@ -12,14 +16,22 @@ package com.zy.musicplayer.listener;
  * //                  别人笑我忒疯癫，我笑自己命太贱；
  * //                  不见满街漂亮妹，哪个归得程序员？
  */
-public interface CustomControllerListener {
-    //暂停播放  上一曲 下一曲
+public class BindDataMsg {
+    private List<MediaEntity> entity; //歌曲列表信息
+    public BindDataMsg(List<MediaEntity> entity) {
+        this.entity = entity;
+    }
+    public List<MediaEntity> getEntity() {
+        return entity;
+    }
+    public void setEntity(List<MediaEntity> entity) {
+        this.entity = entity;
+    }
 
-    public void next();
-
-    public void before();
-
-    public void seek(int positon);
-
-    public  boolean playOrPause();
+    @Override
+    public String toString() {
+        return "BindDataMsg{" +
+                "entity=" + entity +
+                '}';
+    }
 }

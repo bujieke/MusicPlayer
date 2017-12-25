@@ -21,13 +21,28 @@ public class TimeFormatUtile {
         int secont = time % 60;
         StringBuffer sb = new StringBuffer();
         if (hour > 0) {
-            sb.append(hour + " 小时");
+            sb.append(hour + ":");
         }
         if (minute > 0) {
-            sb.append(minute + " 分");
+            if (minute < 10) {
+                sb.append("0" + minute + ":");
+            } else {
+                sb.append(minute + ":");
+            }
+
+        }else{
+
+            sb.append("00:");
         }
         if (secont > 0) {
-            sb.append(secont + " 秒");
+            if (secont < 10) {
+                sb.append("0" + secont);
+            } else {
+                sb.append(secont);
+            }
+
+        }else{
+            sb.append("00");
         }
 
         return sb.toString();

@@ -66,7 +66,7 @@ public class QueryFileUtils {
                 list.add(mediaEntity);
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         } finally {
             if (cursor != null) {
                 cursor.close();

@@ -1,7 +1,9 @@
 package com.zy.musicplayer.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -9,12 +11,13 @@ import com.zy.musicplayer.R;
 import com.zy.musicplayer.adapter.QueryMusicAdapter;
 import com.zy.musicplayer.base.BaseActivity;
 import com.zy.musicplayer.base.BaseAdapter;
-import com.zy.musicplayer.constant.AppConstant;
 import com.zy.musicplayer.db.DbManager;
 import com.zy.musicplayer.entity.MediaEntity;
+import com.zy.musicplayer.eventmsg.BindDataMsg;
+import com.zy.musicplayer.eventmsg.ControllerMsg;
 import com.zy.musicplayer.eventmsg.LocalQueryMusic;
-import com.zy.musicplayer.eventmsg.MusicControllerMsg;
 import com.zy.musicplayer.ui.RecyclerViewTool;
+import com.zy.musicplayer.utils.LogUtils;
 import com.zy.musicplayer.utils.QueryFileUtils;
 
 import org.simple.eventbus.EventBus;
@@ -55,14 +58,10 @@ public class QueryLocalMusic extends BaseActivity {
 
     private void init() {
         mediaList = new ArrayList<MediaEntity>();
-
-
         RecyclerViewTool recyclerViewTool = new RecyclerViewTool(queryRvList, mContext);
         recyclerViewTool.initRecyle(RecyclerViewTool.RVTYPE_GENERAL);
         queryMusicAdapter = new QueryMusicAdapter(mediaList, R.layout.adapter_querymusic);
         queryRvList.setAdapter(queryMusicAdapter);
-
-
         if (mediaList.size() == 0) {
             queryTvBtn.setVisibility(View.VISIBLE);
             queryRvList.setVisibility(View.GONE);
@@ -73,7 +72,10 @@ public class QueryLocalMusic extends BaseActivity {
         queryMusicAdapter.setItemClickLitener(new BaseAdapter.OnItemClickLitener() {
             @Override
             public void onItemClick(View view, int position) {
-                EventBus.getDefault().post(new MusicControllerMsg(mediaList.get(position), AppConstant.PlayerMsg.PLAY_MSG, 0), "controller");
+
+                EventBus.getDefault().post(new ControllerMsg("play", position), "controller");
+
+                opeanActivity(MusicPlayActivity.class);
                 DbManager.insert(mediaList.get(position));
             }
         });
@@ -92,6 +94,7 @@ public class QueryLocalMusic extends BaseActivity {
                 queryTvBtn.setVisibility(View.GONE);
                 queryRvList.setVisibility(View.VISIBLE);
                 queryMusicAdapter.notifyDataSetChanged();
+                EventBus.getDefault().post(new BindDataMsg(mediaList));
             }
         }
 
@@ -105,7 +108,7 @@ public class QueryLocalMusic extends BaseActivity {
 
     @OnClick(R.id.query_tv_btn)
     void query() {
-
+        LogUtils.LogD("query");
         new Thread(new Runnable() {
             @Override
             public void run() {

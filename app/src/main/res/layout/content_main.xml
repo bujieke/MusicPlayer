@@ -9,17 +9,11 @@
     tools:context="com.zy.musicplayer.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <com.zy.musicplayer.widget.CustomController
-        android:id="@+id/main_controller"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
 
     <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
         android:id="@+id/main_list"
-        android:layout_height="match_parent"
-        android:layout_above="@id/main_controller" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
 </RelativeLayout>

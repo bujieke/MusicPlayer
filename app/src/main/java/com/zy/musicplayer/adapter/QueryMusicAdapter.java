@@ -35,12 +35,8 @@ public class QueryMusicAdapter extends BaseAdapter<MediaEntity> {
         TextView name = holder.getView(R.id.music_tv_name);
         TextView title = holder.getView(R.id.music_tv_title);
         TextView time = holder.getView(R.id.music_tv_time);
-        Log.e("sss", mediaEntity.toString());
         name.setText(mediaEntity.display_name + "");
         title.setText(mediaEntity.title + "");
         time.setText(TimeFormatUtile.format(mediaEntity.duration));
-//        {id=0, title='半壶纱', display_name='刘珂矣 - 半壶纱.mp3', path='/storage/emulated/0/netease/cloudmusic/Music/刘珂矣 - 半壶纱.mp3', duration=222014, albums='null', artist='刘珂矣', singer='null', size=8982184}
-
-
     }
 }

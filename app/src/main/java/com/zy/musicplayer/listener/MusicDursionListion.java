@@ -1,7 +1,7 @@
 package com.zy.musicplayer.listener;
 
 /**
- * Created by  zy on 2017/12/15.
+ * Created by  zy on 2017/12/25.
  * //          佛曰:
  * //                  写字楼里写字间，写字间里程序员；
  * //                  程序人员写程序，又拿程序换酒钱。
@@ -12,14 +12,8 @@ package com.zy.musicplayer.listener;
  * //                  别人笑我忒疯癫，我笑自己命太贱；
  * //                  不见满街漂亮妹，哪个归得程序员？
  */
-public interface CustomControllerListener {
-    //暂停播放  上一曲 下一曲
+public interface MusicDursionListion {
 
-    public void next();
+    public int getDursion();
 
-    public void before();
-
-    public void seek(int positon);
-
-    public  boolean playOrPause();
 }

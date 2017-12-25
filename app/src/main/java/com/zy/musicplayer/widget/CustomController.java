@@ -12,9 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zy.musicplayer.R;
-import com.zy.musicplayer.constant.AppConstant;
-import com.zy.musicplayer.eventmsg.MusicControllerMsg;
+import com.zy.musicplayer.eventmsg.ControllerMsg;
 import com.zy.musicplayer.listener.CustomControllerListener;
+import com.zy.musicplayer.utils.TimeFormatUtile;
 
 import org.simple.eventbus.EventBus;
 
@@ -39,11 +39,7 @@ import butterknife.OnClick;
  * 自定义一个播放控制器
  */
 public class CustomController extends LinearLayout {
-    public static boolean isPlay = false;
-
-
     private CustomControllerListener listener;
-
     @BindView(R.id.starttime)
     TextView starttime;
     @BindView(R.id.endtime)
@@ -67,6 +63,7 @@ public class CustomController extends LinearLayout {
     @BindView(R.id.controller_tv_play)
     TextView controllerTvPlay;
     private Context mContext;
+
 
     public CustomController(Context context) {
         this(context, null);
@@ -92,46 +89,57 @@ public class CustomController extends LinearLayout {
     private void initView() {
         View view = inflate(mContext, R.layout.customcontroller, null);
         ButterKnife.bind(this, view);
+
+        seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int progress = seekBar.getProgress();
+                listener.seek(progress);
+            }
+        });
         addView(view, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     @OnClick(R.id.controller_play)
     void play() {
-        isPlay = !isPlay;
-        changeplayimage(isPlay);
-        Toast.makeText(mContext, "播放", Toast.LENGTH_SHORT).show();
-
-    }
-
-    private void changeplayimage(boolean isPlay) {
-
-        if (isPlay) {
-            controllerIvPlay.setImageResource(R.drawable.stop);
-            controllerTvPlay.setText("暂停");
-            EventBus.getDefault().post(new MusicControllerMsg(null, AppConstant.PlayerMsg.REPLAY_MSG, 0), "controller");
-        } else {
+        boolean b = listener.playOrPause();
+        if (b) {
+            EventBus.getDefault().post(new ControllerMsg("pause", 0), "controller");
+            Toast.makeText(mContext, "暂停", Toast.LENGTH_SHORT).show();
             controllerIvPlay.setImageResource(R.drawable.play);
             controllerTvPlay.setText("播放");
-            EventBus.getDefault().post(new MusicControllerMsg(null, AppConstant.PlayerMsg.PAUSE_MSG, 0), "controller");
+        } else {
+
+            EventBus.getDefault().post(new ControllerMsg("play", 0), "controller");
+            Toast.makeText(mContext, "播放", Toast.LENGTH_SHORT).show();
+            controllerIvPlay.setImageResource(R.drawable.stop);
+            controllerTvPlay.setText("暂停");
         }
+
+
     }
+
 
     @OnClick(R.id.controller_slow)
     void slow() {
-
-
     }
 
     @OnClick(R.id.controller_before)
     void before() {
         listener.before();
-
     }
 
     @OnClick(R.id.controller_next)
     void next() {
         listener.next();
-
     }
 
     @OnClick(R.id.controller_speed)
@@ -139,4 +147,18 @@ public class CustomController extends LinearLayout {
 
 
     }
+
+    public void setMaxTime(int time) {
+        seek.setMax(time);
+        String format = TimeFormatUtile.format(time);
+        endtime.setText(format);
+    }
+
+    public void setDuration(int time) {
+        seek.setProgress(time);
+        String format = TimeFormatUtile.format(time);
+        starttime.setText(format);
+    }
+
+
 }
