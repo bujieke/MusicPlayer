@@ -11,30 +11,37 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.HttpParams;
+import com.lzy.okgo.model.Response;
 import com.zy.musicplayer.activity.MusicPlayActivity;
 import com.zy.musicplayer.activity.QueryLocalMusic;
 import com.zy.musicplayer.adapter.QueryMusicAdapter;
 import com.zy.musicplayer.base.BaseAdapter;
+import com.zy.musicplayer.constant.API;
 import com.zy.musicplayer.constant.AppConstant;
 import com.zy.musicplayer.db.DbManager;
 import com.zy.musicplayer.entity.MediaEntity;
 import com.zy.musicplayer.eventmsg.ControllerMsg;
-import com.zy.musicplayer.service.MusicPlayService;
 import com.zy.musicplayer.ui.RecyclerViewTool;
 import com.zy.musicplayer.utils.LogUtils;
 
 import org.simple.eventbus.EventBus;
-import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -42,6 +49,10 @@ public class MainActivity extends AppCompatActivity
 
     @BindView(R.id.main_list)
     RecyclerView mainList;
+    @BindView(R.id.main_btn_startsearch)
+    ImageButton mainBtnStartsearch;
+    @BindView(R.id.main_ed_search)
+    EditText mainEdSearch;
     private QueryMusicAdapter queryMusicAdapter;
     private List<MediaEntity> mediaList = new ArrayList<MediaEntity>();
     private ServiceConnection mConneciton;
@@ -64,6 +75,9 @@ public class MainActivity extends AppCompatActivity
         if (query.size() > 0) {
             mediaList.addAll(query);
             queryMusicAdapter.notifyDataSetChanged();
+        } else {
+
+
         }
     }
 
@@ -74,49 +88,9 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(View view, int position) {
                 EventBus.getDefault().post(new ControllerMsg("play", position), "controller");
                 Intent intent = new Intent(context, MusicPlayActivity.class);
-
                 startActivity(intent);
             }
         });
-
-
-//        mConneciton = new ServiceConnection() {
-//            @Override
-//            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-//                EventBus.getDefault().post(new BindDataMsg(mediaList));
-//                final MusicPlayService.MusicBinder binder = (MusicPlayService.MusicBinder) iBinder;
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        while (true){
-//                            final int currentDuration = binder.getCurrentDuration();
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    if (currentDuration>0){
-//                                        mainController.setDuration(currentDuration);
-//
-//                                    }
-//
-//                                }
-//                            });
-//
-//                        }
-//
-//                    }
-//                }).start();
-
-
-//            }
-//
-//            @Override
-//            public void onServiceDisconnected(ComponentName componentName) {
-//
-//            }
-//        };
-
-
-//        bindService(intent, mConneciton, Context.BIND_AUTO_CREATE);
     }
 
     private void initView() {
@@ -162,9 +136,7 @@ public class MainActivity extends AppCompatActivity
             intent.putExtra("title", "本地音乐");
             startActivity(intent);
         } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+            //分享功能
 
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -177,6 +149,7 @@ public class MainActivity extends AppCompatActivity
         super.startActivity(intent);
         overridePendingTransition(R.anim.anim_in_right_left, R.anim.anim_out_right_left); //切换动画
     }
+
 
     @Override
     public void finish() {
@@ -191,5 +164,30 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @OnClick(R.id.main_btn_startsearch)
+    void search() {
 
+        String queryinfo = mainEdSearch.getText().toString().trim();
+        if (TextUtils.isEmpty(queryinfo)) {
+            Toast.makeText(context, "请输入要查询的内容", Toast.LENGTH_SHORT).show();
+        } else {
+            getNetEasyMusicData(queryinfo);
+        }
+
+
+    }
+
+    public void getNetEasyMusicData(String queryinfo) {
+        HttpParams params = new HttpParams();
+        params.put("s", queryinfo);
+        params.put("offset", 1);
+        params.put("limit", 3);
+        params.put("type", 1);
+        OkGo.<String>post(API.SEARCH).params(params).tag(this).execute(new StringCallback() {
+            @Override
+            public void onSuccess(Response<String> response) {
+                LogUtils.LogD(response.body().toString());
+            }
+        });
+    }
 }

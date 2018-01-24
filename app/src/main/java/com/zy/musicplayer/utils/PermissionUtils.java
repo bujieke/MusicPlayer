@@ -12,15 +12,15 @@ import java.util.Map;
 
 /**
  * Created by  zy on 2017/8/29.
- * //          佛曰:
- * //                  写字楼里写字间，写字间里程序员；
- * //                  程序人员写程序，又拿程序换酒钱。
- * //                  酒醒只在网上坐，酒醉还来网下眠；
- * //                  酒醉酒醒日复日，网上网下年复年。
- * //                  但愿老死电脑间，不愿鞠躬老板前；
- * //                  奔驰宝马贵者趣，公交自行程序员。
- * //                  别人笑我忒疯癫，我笑自己命太贱；
- * //                  不见满街漂亮妹，哪个归得程序员？
+ * 佛曰:
+ * 写字楼里写字间，写字间里程序员；
+ * 程序人员写程序，又拿程序换酒钱。
+ * 酒醒只在网上坐，酒醉还来网下眠；
+ * 酒醉酒醒日复日，网上网下年复年。
+ * 但愿老死电脑间，不愿鞠躬老板前；
+ * 奔驰宝马贵者趣，公交自行程序员。
+ * 别人笑我忒疯癫，我笑自己命太贱；
+ * 不见满街漂亮妹，哪个归得程序员？
  * 适配6.0以上的权限申请类
  */
 
@@ -59,10 +59,11 @@ public class PermissionUtils {
 
     /**
      * 处理权限申请的结果，返回结构化的数据
-     * @param requestCode 请求码
-     * @param permissions 被请求的权限
+     *
+     * @param requestCode  请求码
+     * @param permissions  被请求的权限
      * @param grantResults 请求结果
-     * @param listener 监听
+     * @param listener     监听
      */
     public static void onRequestPermissionsResult(int requestCode,
                                                   @NonNull String[] permissions,

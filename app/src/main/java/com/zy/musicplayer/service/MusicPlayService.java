@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.zy.musicplayer.constant.AppConstant;
@@ -28,14 +27,8 @@ public class MusicPlayService extends Service implements ServiceListener {
     private MediaPlayer mediaPlayer = new MediaPlayer();
     private int position = 0;
     public static String playmodel = AppConstant.PlayBackMode.LISTPLAY; //播放模式
-
     private List<MediaEntity> entityList;
     private int index;
-
-
-
-
-
 
     @Override
     public void onCreate() {

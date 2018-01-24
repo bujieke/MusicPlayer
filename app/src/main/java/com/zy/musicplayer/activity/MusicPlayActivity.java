@@ -5,13 +5,11 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zy.musicplayer.R;
 import com.zy.musicplayer.base.BaseActivity;
-import com.zy.musicplayer.entity.MediaEntity;
 import com.zy.musicplayer.listener.CustomControllerListener;
 import com.zy.musicplayer.present.MusicPlayPresent;
 import com.zy.musicplayer.service.MusicPlayService;
@@ -59,7 +57,6 @@ public class MusicPlayActivity extends BaseActivity implements MusicPlayView, Se
     private void initData() {
         Intent intent = new Intent(mContext, MusicPlayService.class);
         bindService(intent, this, BIND_AUTO_CREATE);
-
     }
 
     @Subscriber(mode = ThreadMode.MAIN)
@@ -126,7 +123,6 @@ public class MusicPlayActivity extends BaseActivity implements MusicPlayView, Se
         present = new MusicPlayPresent(this, this, service);
         present.initMusicData();
         present.getPro();
-
     }
 
     @Override

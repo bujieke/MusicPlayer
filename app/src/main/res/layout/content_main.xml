@@ -9,11 +9,16 @@
     tools:context="com.zy.musicplayer.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
+    <include
+        android:id="@+id/search_layout"
+        layout="@layout/search_layou" />
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_layout" />
 
 
 </RelativeLayout>

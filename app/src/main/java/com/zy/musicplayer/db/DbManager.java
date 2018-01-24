@@ -36,7 +36,6 @@ public class DbManager {
         return helper;
     }
 
-
     public static List<MediaEntity> query(Context context) {
         List<MediaEntity> list = new ArrayList<MediaEntity>();
         SQLiteDatabase db = getIntance(context).getReadableDatabase();
@@ -53,34 +52,7 @@ public class DbManager {
         return list;
     }
 
-    /**
-     * 更新
-     *
-     * @param bean
-     */
-//    public static void update(ZDLG_bean bean) {
-//        SQLiteDatabase writableDatabase = helper.getWritableDatabase();
-//        StringBuffer stringBuffer = new StringBuffer();
-//        String sql = "UPDATE " + DbConstant.TABLE_NAME + " SET ";
-//        int id = bean.getId();
-//        if (bean.getDescribe1() != null) {
-//            stringBuffer.append("'describe1' = '" + bean.getDescribe1() + "'");
-//        }
-//
-//        if (bean.getDescribe2() != null) {
-//            stringBuffer.append(",'describe2' = '" + bean.getDescribe2() + "'");
-//        }
-//        if (bean.getDescribe3() != null) {
-//            stringBuffer.append(",'describe3' = '" + bean.getDescribe3() + "'");
-//        }
-//        if (bean.getDescribe4() != null) {
-//            stringBuffer.append(",'describe4' = '" + bean.getDescribe4() + "'");
-//        }
-//        writableDatabase.execSQL(sql + stringBuffer.toString() + " where _id = " + id);
-//        writableDatabase.close();
-
-//    }
-
+ 
     /**
      * 插入
      *
@@ -88,7 +60,6 @@ public class DbManager {
      */
     public static void insert(MediaEntity bean) {
         String str = JSON.toJSONString(bean);
-
         SQLiteDatabase writableDatabase = helper.getWritableDatabase();
         String sql = "insert into " + AppConstant.Datebase.TB_NAME + "(" +
                 AppConstant.Datebase.URL + "," + AppConstant.Datebase.DATA_JSON + ")" + "values('" + bean.path + "','" + str +
@@ -96,7 +67,6 @@ public class DbManager {
         Log.e("sql :", sql);
         try {
             writableDatabase.execSQL(sql);
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

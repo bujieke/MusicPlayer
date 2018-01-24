@@ -37,10 +37,34 @@ import android.util.Log;
  */
 public class LogUtils {
     public static String DEBUG = "debug";
+
     public static void LogD(String msg) {
-        Log.e(DEBUG, "--------------Log-Start--------------\n");
-        Log.e(DEBUG, "     " + msg + "\n");
-        Log.e(DEBUG, "-------------Log-End-------------\n");
+        if (msg.length() > 4000) {
+            for (int i = 0; i < msg.length(); i += 4000) {
+                if (i + 4000 < msg.length())
+                    Log.d(DEBUG, msg.substring(i, i + 4000));
+                else
+                    Log.d(DEBUG, msg.substring(i, msg.length()));
+            }
+        } else {
+            Log.d(DEBUG, msg + "\n");
+        }
+
+    }
+
+
+    public static void LogE(String msg) {
+        Log.e(DEBUG, "-------------------------------------------\n");
+        if (msg.length() > 4000) {
+            for (int i = 0; i < msg.length(); i += 4000) {
+                if (i + 4000 < msg.length())
+                    Log.e(DEBUG, msg.substring(i, i + 4000));
+                else
+                    Log.e(DEBUG, msg.substring(i, msg.length()));
+            }
+        } else
+            Log.e(DEBUG, msg + "\n");
+        Log.e(DEBUG, "---------------------------------------------");
     }
 
 }

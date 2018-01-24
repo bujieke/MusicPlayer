@@ -30,7 +30,7 @@ public class TimeFormatUtile {
                 sb.append(minute + ":");
             }
 
-        }else{
+        } else {
 
             sb.append("00:");
         }
@@ -41,7 +41,7 @@ public class TimeFormatUtile {
                 sb.append(secont);
             }
 
-        }else{
+        } else {
             sb.append("00");
         }
 
