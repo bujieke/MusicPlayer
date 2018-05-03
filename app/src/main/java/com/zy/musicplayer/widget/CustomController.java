@@ -115,7 +115,6 @@ public class CustomController extends LinearLayout {
             controllerIvPlay.setImageResource(R.drawable.play);
             controllerTvPlay.setText("播放");
         } else {
-
             EventBus.getDefault().post(new ControllerMsg("play", 0), "controller");
             Toast.makeText(mContext, "播放", Toast.LENGTH_SHORT).show();
             controllerIvPlay.setImageResource(R.drawable.stop);

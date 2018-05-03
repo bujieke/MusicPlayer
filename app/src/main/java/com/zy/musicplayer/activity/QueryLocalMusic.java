@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.zy.musicplayer.R;
 import com.zy.musicplayer.adapter.QueryMusicAdapter;
+import com.zy.musicplayer.application.MyApplication;
 import com.zy.musicplayer.base.BaseActivity;
 import com.zy.musicplayer.base.BaseAdapter;
 import com.zy.musicplayer.db.DbManager;
@@ -74,7 +75,6 @@ public class QueryLocalMusic extends BaseActivity {
             public void onItemClick(View view, int position) {
 
                 EventBus.getDefault().post(new ControllerMsg("play", position), "controller");
-
                 opeanActivity(MusicPlayActivity.class);
                 DbManager.insert(mediaList.get(position));
             }
@@ -94,7 +94,7 @@ public class QueryLocalMusic extends BaseActivity {
                 queryTvBtn.setVisibility(View.GONE);
                 queryRvList.setVisibility(View.VISIBLE);
                 queryMusicAdapter.notifyDataSetChanged();
-                EventBus.getDefault().post(new BindDataMsg(mediaList));
+                MyApplication.getInstance().setSongsList(mediaList);
             }
         }
 

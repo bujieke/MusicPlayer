@@ -7,8 +7,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
 
+import com.zy.musicplayer.application.MyApplication;
 import com.zy.musicplayer.constant.AppConstant;
-import com.zy.musicplayer.db.DbManager;
 import com.zy.musicplayer.entity.MediaEntity;
 import com.zy.musicplayer.eventmsg.BindDataMsg;
 import com.zy.musicplayer.eventmsg.ControllerMsg;
@@ -19,37 +19,28 @@ import com.zy.musicplayer.utils.LogUtils;
 import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class MusicPlayService extends Service implements ServiceListener {
 
     private MediaPlayer mediaPlayer = new MediaPlayer();
     private int position = 0;
     public static String playmodel = AppConstant.PlayBackMode.LISTPLAY; //播放模式
-    private List<MediaEntity> entityList;
-    private int index;
+    private MyApplication instance;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
-
+        instance = MyApplication.getInstance();
         EventBus.getDefault().register(this);
-        entityList = new ArrayList<>();
-        List<MediaEntity> query = DbManager.query(this);
-        LogUtils.LogD("加载播放列表" + query.size());
-        if (query.size() > 0) {
-            entityList.clear();
-            entityList.addAll(query);
-        }
+
+
     }
 
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
-        LogUtils.LogD("启动音乐服务");
-
     }
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -60,13 +51,13 @@ public class MusicPlayService extends Service implements ServiceListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         LogUtils.LogD("MusicPlayService : onStartCommand");
         //加载默认播放列表
-
         return super.onStartCommand(intent, flags, startId);
     }
 
 
     private void play(final MediaEntity entity) {
         try {
+
             mediaPlayer.reset();//把各项参数恢复到初始状态
             mediaPlayer.setDataSource(entity.path);
             mediaPlayer.prepare();  //进行缓冲
@@ -79,12 +70,14 @@ public class MusicPlayService extends Service implements ServiceListener {
                     switch (playmodel) {
                         case AppConstant.PlayBackMode.LISTPLAY:
                             //列表循环
-                            index++;
-                            if (index < entityList.size()) {
-                                play(entityList.get(index));
+                            int songItemPos = instance.songItemPos;
+                            songItemPos = songItemPos + 1;
+                            if (songItemPos < instance.songsList.size()) {
+                                instance.songItemPos = songItemPos;
+                                play(instance.songsList.get(songItemPos));
                             } else {
-                                index = 0;
-                                play(entityList.get(0));
+                                instance.songItemPos = 0;
+                                play(instance.songsList.get(songItemPos));
                             }
                             break;
                         case AppConstant.PlayBackMode.SINGLEPLAY:
@@ -107,24 +100,27 @@ public class MusicPlayService extends Service implements ServiceListener {
     private void controller(ControllerMsg msg) {
         LogUtils.LogD("---controller---" + msg);
         String action = msg.getAction();
+        int songItemPos = instance.songItemPos;
         switch (action) {
             case "before":
-                index--;
-                if (index >= 0) {
-                    play(entityList.get(index));
+                songItemPos = songItemPos - 1;
+                if (songItemPos < instance.songsList.size() && songItemPos >= 0) {
+                    instance.songItemPos = songItemPos;
+                    play(instance.songsList.get(songItemPos));
                 } else {
-                    index++;
-                    Toast.makeText(this, "没有上一曲了", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case "next":
-                index++;
-                if (index < entityList.size()) {
-                    play(entityList.get(index));
-                } else {
-                    index--;
                     Toast.makeText(this, "没有下一曲了", Toast.LENGTH_SHORT).show();
                 }
+
+                break;
+            case "next":
+                songItemPos = songItemPos + 1;
+                if (songItemPos < instance.songsList.size()) {
+                    play(instance.songsList.get(songItemPos));
+                    instance.songItemPos = songItemPos;
+                } else {
+                    Toast.makeText(this, "没有下一曲了", Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case "seek":
                 int arge = msg.getArge();
@@ -133,9 +129,8 @@ public class MusicPlayService extends Service implements ServiceListener {
                 }
                 break;
             case "play":
-                index = msg.getArge();
-                play(entityList.get(index));
-                break;
+                instance.songItemPos = msg.getArge();
+                play(instance.songsList.get(msg.getArge()));
             case "pause":
                 pause();
                 break;
@@ -145,8 +140,7 @@ public class MusicPlayService extends Service implements ServiceListener {
     @Subscriber()
     private void bindData(BindDataMsg msg) {
         LogUtils.LogD("---binddata---" + msg);
-        entityList.clear();
-        entityList.addAll(msg.getEntity());
+
     }
 
     @Subscriber(tag = "playmode")
@@ -161,7 +155,6 @@ public class MusicPlayService extends Service implements ServiceListener {
     private void pause() {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
-
         }
     }
 
@@ -200,15 +193,6 @@ public class MusicPlayService extends Service implements ServiceListener {
         return mediaPlayer.getCurrentPosition();
     }
 
-    @Override
-    public MediaEntity currentMedia() {
-        return entityList.get(index);
-    }
-
-    @Override
-    public List<MediaEntity> currentList() {
-        return entityList;
-    }
 
     public class MusicBinder extends Binder {
 

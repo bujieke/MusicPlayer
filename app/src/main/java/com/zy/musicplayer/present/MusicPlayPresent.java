@@ -2,6 +2,7 @@ package com.zy.musicplayer.present;
 
 import android.content.Context;
 
+import com.zy.musicplayer.application.MyApplication;
 import com.zy.musicplayer.entity.MediaEntity;
 import com.zy.musicplayer.eventmsg.ControllerMsg;
 import com.zy.musicplayer.service.MusicPlayService;
@@ -40,47 +41,35 @@ public class MusicPlayPresent {
 
     public void initMusicData() {
 
-        MediaEntity mediaEntity = service.currentMedia();
-        //初始化音乐资源
+        MyApplication instance = MyApplication.getInstance();
+        int songItemPos = instance.songItemPos;
+        MediaEntity mediaEntity = instance.songsList.get(songItemPos);
         if (mediaEntity != null) {
             int duration = mediaEntity.duration;
             mView.setControllerProMax(duration);
             mView.setTitle(mediaEntity.title);
-
         } else {
             mView.showToast("未成功加载歌曲");
         }
-
     }
 
     //播放Or暂停
     public boolean playOrPause() {
-
         return service.isPlay();
     }
 
     //下一曲
     public void next() {
         EventBus.getDefault().post(new ControllerMsg("next", 0), "controller");
-        initMusicData();
+
     }
 
     //上一曲
     public void before() {
         EventBus.getDefault().post(new ControllerMsg("before", 0), "controller");
-        initMusicData();
-    }
-
-    //快进
-    public void fastForward() {
-
 
     }
 
-    //快退
-    public void reWind() {
-
-    }
 
     //拖动
     public void touchSeekBar(int protion) {

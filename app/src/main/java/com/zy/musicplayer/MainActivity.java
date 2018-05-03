@@ -25,6 +25,7 @@ import com.lzy.okgo.model.Response;
 import com.zy.musicplayer.activity.MusicPlayActivity;
 import com.zy.musicplayer.activity.QueryLocalMusic;
 import com.zy.musicplayer.adapter.QueryMusicAdapter;
+import com.zy.musicplayer.application.MyApplication;
 import com.zy.musicplayer.base.BaseAdapter;
 import com.zy.musicplayer.constant.API;
 import com.zy.musicplayer.constant.AppConstant;
@@ -35,6 +36,7 @@ import com.zy.musicplayer.ui.RecyclerViewTool;
 import com.zy.musicplayer.utils.LogUtils;
 
 import org.simple.eventbus.EventBus;
+import org.simple.eventbus.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.zy.musicplayer.R.drawable.query;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -54,30 +58,29 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.main_ed_search)
     EditText mainEdSearch;
     private QueryMusicAdapter queryMusicAdapter;
-    private List<MediaEntity> mediaList = new ArrayList<MediaEntity>();
-    private ServiceConnection mConneciton;
+
+
     private Context context;
+    private List<MediaEntity> songsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        EventBus.getDefault().register(this);
         ButterKnife.bind(this);
         context = this;
         initView();
-        getData();
+
         initListener();
 
     }
 
-    private void getData() {
-        List<MediaEntity> query = DbManager.query(this);
-        if (query.size() > 0) {
-            mediaList.addAll(query);
+
+    @Subscriber
+    private void updateUi(String msg) {
+        if (msg.equals("update")) {
             queryMusicAdapter.notifyDataSetChanged();
-        } else {
-
-
         }
     }
 
@@ -105,7 +108,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         RecyclerViewTool recyclerViewTool = new RecyclerViewTool(mainList, this);
         recyclerViewTool.initRecyle(RecyclerViewTool.RVTYPE_GENERAL);
-        queryMusicAdapter = new QueryMusicAdapter(mediaList, R.layout.adapter_querymusic);
+        queryMusicAdapter = new QueryMusicAdapter(MyApplication.getInstance().songsList, R.layout.adapter_querymusic);
         mainList.setAdapter(queryMusicAdapter);
     }
 
@@ -189,5 +192,11 @@ public class MainActivity extends AppCompatActivity
                 LogUtils.LogD(response.body().toString());
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

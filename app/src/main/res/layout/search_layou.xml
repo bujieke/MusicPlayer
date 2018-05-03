@@ -2,6 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="2dp"
+    android:background="@drawable/bg7"
     android:gravity="center"
     android:orientation="horizontal"
     android:paddingLeft="16dp"
@@ -9,19 +11,20 @@
 
     <ImageButton
         android:id="@+id/main_btn_startsearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_alignParentRight="true"
         android:layout_centerInParent="true"
         android:background="@drawable/query" />
 
     <EditText
-        android:paddingRight="5dp"
         android:id="@+id/main_ed_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_toLeftOf="@id/main_btn_startsearch" />
+        android:layout_toLeftOf="@id/main_btn_startsearch"
+
+        android:paddingRight="5dp" />
 
 
 </RelativeLayout>

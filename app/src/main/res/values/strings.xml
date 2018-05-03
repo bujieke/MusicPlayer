@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MusicPlayer</string>
+    <string name="app_name">我的音乐播放器</string>
 
     <string name="navigation_drawer_open">打开侧边栏</string>
     <string name="navigation_drawer_close">关闭侧边栏</string>

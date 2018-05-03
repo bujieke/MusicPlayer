@@ -2,6 +2,8 @@ package com.zy.musicplayer.listener;
 
 import android.media.MediaPlayer;
 
+import org.simple.eventbus.EventBus;
+
 /**
  * Created by  zy on 2017/12/15.
  * //          佛曰:
@@ -24,7 +26,7 @@ public class PreparedListener implements MediaPlayer.OnPreparedListener {
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();    //开始播放
-
+        EventBus.getDefault().post("update");
         if (positon > 0) {    //如果音乐不是从头播放
             mp.seekTo(positon);
         }

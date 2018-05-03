@@ -22,7 +22,6 @@ public interface ServiceListener {
 
     public int CurrentTime();
 
-    public MediaEntity currentMedia();
-    public List<MediaEntity> currentList();
+
 
 }

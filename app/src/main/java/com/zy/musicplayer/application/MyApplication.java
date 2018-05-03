@@ -1,7 +1,11 @@
 package com.zy.musicplayer.application;
 
 import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.widget.RemoteViews;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
@@ -9,13 +13,16 @@ import com.lzy.okgo.cookie.CookieJarImpl;
 import com.lzy.okgo.cookie.store.SPCookieStore;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.lzy.okgo.model.HttpHeaders;
+import com.zy.musicplayer.R;
 import com.zy.musicplayer.db.DbManager;
 import com.zy.musicplayer.entity.MediaEntity;
 import com.zy.musicplayer.eventmsg.BindDataMsg;
 import com.zy.musicplayer.service.MusicPlayService;
+import com.zy.musicplayer.utils.LogUtils;
 
 import org.simple.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -35,10 +42,25 @@ import okhttp3.OkHttpClient;
  * //                  不见满街漂亮妹，哪个归得程序员？
  */
 public class MyApplication extends Application {
+    private static MyApplication instance;
+    public List<MediaEntity> songsList = new ArrayList<>();
+    public int songItemPos;//当前播放音乐在列表中的位置
+    public NotificationManager notManager;
+
+    public static synchronized MyApplication getInstance() {
+        return instance;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         //开启服务
+        List<MediaEntity> query = DbManager.query(this);
+        if (query.size() > 0) {
+            songsList.clear();
+            songsList.addAll(query);
+        }
 
         Intent intent = new Intent(this, MusicPlayService.class);
         startService(intent);
@@ -69,5 +91,50 @@ public class MyApplication extends Application {
                 .setCacheTime(5000) //设置缓存时间
                 .setCacheMode(CacheMode.REQUEST_FAILED_READ_CACHE) //设置缓存模式
                 .addCommonHeaders(headers);
+    }
+
+
+    private void sendNotification() {
+
+
+//        Notification notification = new Notification();
+//        //初始化通知
+//        notification.icon = R.drawable.music;
+//        RemoteViews contentView = new RemoteViews(getPackageName(),
+//                R.layout.notification_control);
+//        notification.contentView = contentView;
+//
+//        Intent intentPlay = new Intent("play");//新建意图，并设置action标记为"play"，用于接收广播时过滤意图信息
+//        PendingIntent pIntentPlay = PendingIntent.getBroadcast(this, 0,
+//                intentPlay, 0);
+//        contentView.setOnClickPendingIntent(R.id.bt_notic_play, pIntentPlay);//为play控件注册事件
+//
+//        Intent intentPause = new Intent("pause");
+//        PendingIntent pIntentPause = PendingIntent.getBroadcast(this, 0,
+//                intentPause, 0);
+//        contentView.setOnClickPendingIntent(R.id.bt_notic_pause, pIntentPause);
+//
+//        Intent intentNext = new Intent("next");
+//        PendingIntent pIntentNext = PendingIntent.getBroadcast(this, 0,
+//                intentNext, 0);
+//        contentView.setOnClickPendingIntent(R.id.bt_notic_next, pIntentNext);
+//
+//        Intent intentLast = new Intent("last");
+//        PendingIntent pIntentLast = PendingIntent.getBroadcast(this, 0,
+//                intentLast, 0);
+//        contentView.setOnClickPendingIntent(R.id.bt_notic_last, pIntentLast);
+//
+//        Intent intentCancel = new Intent("cancel");
+//        PendingIntent pIntentCancel = PendingIntent.getBroadcast(this, 0,
+//                intentCancel, 0);
+//        contentView
+//                .setOnClickPendingIntent(R.id.bt_notic_cancel, pIntentCancel);
+//        notification.flags = notification.FLAG_NO_CLEAR;//设置通知点击或滑动时不被清除
+//        notManager.notify(Const.NOTI_CTRL_ID, notification);//开启通知
+    }
+
+    public void setSongsList(List<MediaEntity> songsList) {
+        this.songsList = songsList;
+
     }
 }

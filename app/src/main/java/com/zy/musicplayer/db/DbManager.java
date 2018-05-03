@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
+import com.zy.musicplayer.application.MyApplication;
 import com.zy.musicplayer.constant.AppConstant;
 import com.zy.musicplayer.entity.MediaEntity;
 
@@ -52,7 +53,7 @@ public class DbManager {
         return list;
     }
 
- 
+
     /**
      * 插入
      *
@@ -67,6 +68,7 @@ public class DbManager {
         Log.e("sql :", sql);
         try {
             writableDatabase.execSQL(sql);
+            MyApplication.getInstance().songsList.add(bean);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

@@ -3,13 +3,19 @@ package com.zy.musicplayer.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.XmlResourceParser;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zy.musicplayer.R;
 import com.zy.musicplayer.base.BaseActivity;
+import com.zy.musicplayer.eventmsg.BindDataMsg;
 import com.zy.musicplayer.listener.CustomControllerListener;
 import com.zy.musicplayer.present.MusicPlayPresent;
 import com.zy.musicplayer.service.MusicPlayService;
@@ -17,6 +23,7 @@ import com.zy.musicplayer.utils.LogUtils;
 import com.zy.musicplayer.view.MusicPlayView;
 import com.zy.musicplayer.widget.CustomController;
 
+import org.simple.eventbus.EventBus;
 import org.simple.eventbus.Subscriber;
 import org.simple.eventbus.ThreadMode;
 
@@ -39,6 +46,8 @@ public class MusicPlayActivity extends BaseActivity implements MusicPlayView, Se
     TextView play_title;
     @BindView(R.id.customcontroller)
     CustomController customcontroller;
+    @BindView(R.id.music_iv_icon)
+    ImageView icon;
     private MusicPlayPresent present;
 
     @Override
@@ -49,6 +58,7 @@ public class MusicPlayActivity extends BaseActivity implements MusicPlayView, Se
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         initData();
 
 
@@ -104,6 +114,22 @@ public class MusicPlayActivity extends BaseActivity implements MusicPlayView, Se
 
     }
 
+
+    @Subscriber()
+    private void updateUI(String msg) {
+        LogUtils.LogD("updateUI:" + msg);
+        if (msg.equals("update")) {
+            present.initMusicData();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+        unbindService(this);
+    }
+
     @Override
     public void setTitle(String title) {
         play_title.setText(title);
@@ -122,6 +148,10 @@ public class MusicPlayActivity extends BaseActivity implements MusicPlayView, Se
         initView();
         present = new MusicPlayPresent(this, this, service);
         present.initMusicData();
+        Animation operatingAnim = AnimationUtils.loadAnimation(this, R.anim.icon);
+        LinearInterpolator lin = new LinearInterpolator();
+        operatingAnim.setInterpolator(lin);
+        icon.startAnimation(operatingAnim);
         present.getPro();
     }
 
@@ -129,4 +159,6 @@ public class MusicPlayActivity extends BaseActivity implements MusicPlayView, Se
     public void onServiceDisconnected(ComponentName componentName) {
 
     }
+
+
 }
