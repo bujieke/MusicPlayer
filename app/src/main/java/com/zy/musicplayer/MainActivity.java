@@ -79,9 +79,24 @@ public class MainActivity extends AppCompatActivity
 
     @Subscriber
     private void updateUi(String msg) {
+
         if (msg.equals("update")) {
-            queryMusicAdapter.notifyDataSetChanged();
+//            LogUtils.LogD("updateUi+:" + msg);
+//            songsList = MyApplication.getInstance().songsList;
+//            queryMusicAdapter.notifyDataSetChanged();
+
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (queryMusicAdapter != null) {
+//            songsList.clear();
+//            songsList.addAll(MyApplication.getInstance().songsList);
+//            queryMusicAdapter.notifyDataSetChanged();
+        }
+
     }
 
     private void initListener() {
@@ -97,6 +112,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initView() {
+        songsList = MyApplication.getInstance().songsList;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -108,7 +124,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         RecyclerViewTool recyclerViewTool = new RecyclerViewTool(mainList, this);
         recyclerViewTool.initRecyle(RecyclerViewTool.RVTYPE_GENERAL);
-        queryMusicAdapter = new QueryMusicAdapter(MyApplication.getInstance().songsList, R.layout.adapter_querymusic);
+        queryMusicAdapter = new QueryMusicAdapter(songsList, R.layout.adapter_querymusic);
         mainList.setAdapter(queryMusicAdapter);
     }
 
