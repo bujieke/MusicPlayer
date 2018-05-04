@@ -1,12 +1,19 @@
 package com.zy.musicplayer.service;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.zy.musicplayer.MainActivity;
+import com.zy.musicplayer.R;
 import com.zy.musicplayer.application.MyApplication;
 import com.zy.musicplayer.constant.AppConstant;
 import com.zy.musicplayer.entity.MediaEntity;
@@ -35,6 +42,7 @@ public class MusicPlayService extends Service implements ServiceListener {
 
 
     }
+
 
     @Override
     public void onStart(Intent intent, int startId) {

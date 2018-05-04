@@ -38,6 +38,16 @@
             android:name=".service.MusicPlayService"
             android:enabled="true"
             android:exported="true"></service>
+        <receiver android:name=".service.MyNotificationBroadcastReceiver">
+            <intent-filter>
+                <action android:name="close" />
+                <action android:name="next" />
+                <action android:name="last" />
+                <action android:name="pause" />
+                <action android:name="play" />
+            </intent-filter>
+
+        </receiver>
 
     </application>
 

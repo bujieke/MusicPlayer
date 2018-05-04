@@ -2,6 +2,7 @@ package com.zy.musicplayer.activity;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.XmlResourceParser;
 import android.os.Bundle;
@@ -14,11 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zy.musicplayer.R;
+import com.zy.musicplayer.application.MyApplication;
 import com.zy.musicplayer.base.BaseActivity;
 import com.zy.musicplayer.eventmsg.BindDataMsg;
 import com.zy.musicplayer.listener.CustomControllerListener;
 import com.zy.musicplayer.present.MusicPlayPresent;
 import com.zy.musicplayer.service.MusicPlayService;
+import com.zy.musicplayer.service.MyNotificationBroadcastReceiver;
 import com.zy.musicplayer.utils.LogUtils;
 import com.zy.musicplayer.view.MusicPlayView;
 import com.zy.musicplayer.widget.CustomController;
@@ -49,6 +52,7 @@ public class MusicPlayActivity extends BaseActivity implements MusicPlayView, Se
     @BindView(R.id.music_iv_icon)
     ImageView icon;
     private MusicPlayPresent present;
+    private MyNotificationBroadcastReceiver receiver;
 
     @Override
     public int getLayout() {
@@ -60,7 +64,15 @@ public class MusicPlayActivity extends BaseActivity implements MusicPlayView, Se
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
         initData();
-
+        MyApplication.getInstance().sendNotification();
+        receiver = new MyNotificationBroadcastReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("close");
+        filter.addAction("next");
+        filter.addAction("last");
+        filter.addAction("pause");
+        filter.addAction("play");
+        mContext.registerReceiver(receiver, filter);
 
     }
 
@@ -71,7 +83,7 @@ public class MusicPlayActivity extends BaseActivity implements MusicPlayView, Se
 
     @Subscriber(mode = ThreadMode.MAIN)
     public void setPros(Integer pro) {
-        LogUtils.LogD(pro + "-----------------");
+
         setPro(pro);
     }
 
@@ -128,6 +140,7 @@ public class MusicPlayActivity extends BaseActivity implements MusicPlayView, Se
         super.onDestroy();
         EventBus.getDefault().unregister(this);
         unbindService(this);
+        unregisterReceiver(receiver);
     }
 
     @Override

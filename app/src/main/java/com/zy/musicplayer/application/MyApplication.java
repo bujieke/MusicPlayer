@@ -14,6 +14,7 @@ import com.lzy.okgo.cookie.store.SPCookieStore;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.lzy.okgo.model.HttpHeaders;
 import com.zy.musicplayer.R;
+import com.zy.musicplayer.activity.MusicPlayActivity;
 import com.zy.musicplayer.db.DbManager;
 import com.zy.musicplayer.entity.MediaEntity;
 import com.zy.musicplayer.eventmsg.BindDataMsg;
@@ -91,50 +92,51 @@ public class MyApplication extends Application {
                 .setCacheTime(5000) //设置缓存时间
                 .setCacheMode(CacheMode.REQUEST_FAILED_READ_CACHE) //设置缓存模式
                 .addCommonHeaders(headers);
+
     }
 
 
-    private void sendNotification() {
+    public void sendNotification() {
 
+        notManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        Notification notification = new Notification();
+        //初始化通知
+        notification.icon = R.drawable.music;
+        RemoteViews contentView = new RemoteViews(getPackageName(),
+                R.layout.cunstom_notification);
+        notification.contentView = contentView;
+        Intent intentPlay = new Intent("play");//新建意图，并设置action标记为"play"，用于接收广播时过滤意图信息
+        PendingIntent pIntentPlay = PendingIntent.getBroadcast(this, 0,
+                intentPlay, 0);
+        contentView.setOnClickPendingIntent(R.id.notification_play, pIntentPlay);//为play控件注册事件
+        Intent intent = new Intent();
+        intent.setClass(this, MusicPlayActivity.class);
+        PendingIntent pIntentOpen = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        contentView.setOnClickPendingIntent(R.id.ll_parent, pIntentOpen);
+        Intent intentPause = new Intent("pause");
+        PendingIntent pIntentPause = PendingIntent.getBroadcast(this, 0,
+                intentPause, 0);
+        contentView.setOnClickPendingIntent(R.id.notification_pause, pIntentPause);
+        Intent intentNext = new Intent("next");
+        PendingIntent pIntentNext = PendingIntent.getBroadcast(this, 0,
+                intentNext, 0);
+        contentView.setOnClickPendingIntent(R.id.notification_next, pIntentNext);
 
-//        Notification notification = new Notification();
-//        //初始化通知
-//        notification.icon = R.drawable.music;
-//        RemoteViews contentView = new RemoteViews(getPackageName(),
-//                R.layout.notification_control);
-//        notification.contentView = contentView;
-//
-//        Intent intentPlay = new Intent("play");//新建意图，并设置action标记为"play"，用于接收广播时过滤意图信息
-//        PendingIntent pIntentPlay = PendingIntent.getBroadcast(this, 0,
-//                intentPlay, 0);
-//        contentView.setOnClickPendingIntent(R.id.bt_notic_play, pIntentPlay);//为play控件注册事件
-//
-//        Intent intentPause = new Intent("pause");
-//        PendingIntent pIntentPause = PendingIntent.getBroadcast(this, 0,
-//                intentPause, 0);
-//        contentView.setOnClickPendingIntent(R.id.bt_notic_pause, pIntentPause);
-//
-//        Intent intentNext = new Intent("next");
-//        PendingIntent pIntentNext = PendingIntent.getBroadcast(this, 0,
-//                intentNext, 0);
-//        contentView.setOnClickPendingIntent(R.id.bt_notic_next, pIntentNext);
-//
-//        Intent intentLast = new Intent("last");
-//        PendingIntent pIntentLast = PendingIntent.getBroadcast(this, 0,
-//                intentLast, 0);
-//        contentView.setOnClickPendingIntent(R.id.bt_notic_last, pIntentLast);
-//
-//        Intent intentCancel = new Intent("cancel");
-//        PendingIntent pIntentCancel = PendingIntent.getBroadcast(this, 0,
-//                intentCancel, 0);
-//        contentView
-//                .setOnClickPendingIntent(R.id.bt_notic_cancel, pIntentCancel);
-//        notification.flags = notification.FLAG_NO_CLEAR;//设置通知点击或滑动时不被清除
-//        notManager.notify(Const.NOTI_CTRL_ID, notification);//开启通知
+        Intent intentLast = new Intent("last");
+        PendingIntent pIntentLast = PendingIntent.getBroadcast(this, 0,
+                intentLast, 0);
+        contentView.setOnClickPendingIntent(R.id.notification_before, pIntentLast);
+
+        Intent intentCancel = new Intent("close");
+        PendingIntent pIntentCancel = PendingIntent.getBroadcast(this, 0,
+                intentCancel, 0);
+        contentView
+                .setOnClickPendingIntent(R.id.notification_close, pIntentCancel);
+        notification.flags = notification.FLAG_NO_CLEAR;//设置通知点击或滑动时不被清除
+        notManager.notify(1, notification);//开启通知
     }
 
     public void setSongsList(List<MediaEntity> songsList) {
         this.songsList = songsList;
-
     }
 }

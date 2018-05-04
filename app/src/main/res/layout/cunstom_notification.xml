@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_parent"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:background="@drawable/bg5"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/notification_close"
+        style="@style/Controller_Style"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            style="@style/Controller_Image_Style"
+            android:src="@drawable/close" />
+
+        <TextView
+            style="@style/Controller_text_style"
+            android:text="关闭" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/notification_before"
+        style="@style/Controller_Style"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            style="@style/Controller_Image_Style"
+            android:src="@drawable/before" />
+
+        <TextView
+            style="@style/Controller_text_style"
+            android:text="上一曲" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/notification_pause"
+        style="@style/Controller_Style"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+
+            style="@style/Controller_Image_Style"
+            android:src="@drawable/stop" />
+
+        <TextView
+            style="@style/Controller_text_style"
+            android:text="暂停" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/notification_play"
+        style="@style/Controller_Style"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/controller_iv_play"
+            style="@style/Controller_Image_Style"
+            android:src="@drawable/play" />
+
+        <TextView
+            android:id="@+id/controller_tv_play"
+            style="@style/Controller_text_style"
+            android:text="播放" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/notification_next"
+        style="@style/Controller_Style"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            style="@style/Controller_Image_Style"
+            android:src="@drawable/next" />
+
+        <TextView
+            style="@style/Controller_text_style"
+            android:text="下一曲" />
+    </LinearLayout>
+</LinearLayout>
